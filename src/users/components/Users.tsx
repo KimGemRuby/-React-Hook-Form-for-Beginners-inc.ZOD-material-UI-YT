@@ -1,22 +1,41 @@
+import React from "react";
 import { useForm } from "react-hook-form";
+import { Stack, TextField } from "@mui/material";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { schema } from "../types/schema";
+import { RHFAutocomplete } from "../../components/RHFAutocomplete";
 
 export function Users() {
   const {
     register,
     formState: { errors },
-  } = useForm<{ email: string }>();
+    control,
+  } = useForm<Schema>({
+    mode: "all",
+    resolver: zodResolver(schema),
+  });
 
   return (
-    <>
-      <input
-        {...register("email", {
-          required: { value: true, message: "the email is required" },
-          maxLength: { value: 10, message: "too many characters" },
-        })}
-        placeholder="email"
+    <Stack sx={{ gap: 2 }}>
+      <TextField
+        {...register("name")}
+        label="Name"
+        error={!!errors.name}
+        helperText={errors.name?.message}
       />
-      <p>{errors.email?.message}</p>
-    </>
+      <TextField
+        {...register("email")}
+        label="Email"
+        error={!!errors.email}
+        helperText={errors.email?.message}
+      />
+      <RHFAutocomplete
+        name="state"
+        options={[]}
+        label="State"
+        control={control} // Ajout de la prop control
+      />
+    </Stack>
   );
 }
 
